@@ -1,6 +1,9 @@
 clear;
 %addpath('C:\Users\yotam\Downloads\Field_II_Toolbox') % we don't need this
-%because we added it permanently but add yours so it works
+%because we added it permanently, but add yours so it works
+
+% Flags
+plot_flag = 1; % 1 is on, 0 is off
 
 % functions we've written and are used in this script:
 function h = PlotSignal(data, fs, titleText, xLabel, yLabel, TimeOrFreq)
@@ -85,16 +88,21 @@ titles = struct('pressure_field_point1', 'Pressure Field 2cm Deep, Time Domain',
 fields = {'pressure_field_point1', 'pressure_field_point2'};
 
 % plots time domain
-figure;
-for i = 1:length(fields)
-    field_name = fields{i}; 
-    field_data = eval(field_name); 
-    header = titles.(field_name);
-    x_label = 'Time [sec]';
-    y_label = 'Amplitude [MPa]';
-    subplot(1,length(fields),i);
-    PlotSignal(field_data, fs, header, x_label, y_label, "time");
+if plot_flag
+    figure;
+    for i = 1:length(fields)
+        field_name = fields{i}; 
+        field_data = eval(field_name); 
+        header = titles.(field_name);
+        x_label = 'Time [sec]';
+        y_label = 'Amplitude [MPa]';
+        subplot(1,length(fields),i);
+        if plot_flag 
+            PlotSignal(field_data, fs, header, x_label, y_label, "time");
+        end
+    end
 end
+
 
 % prepare for plotting in frequency domain
 L1 = length(pressure_field_point1);
@@ -108,14 +116,92 @@ titles = struct('fft_result1', 'Pressure Field 2cm Deep, Frequency Domain', ...
 fields_freq = {'fft_result1', 'fft_result2'};
 
 % plots, frequency domain
-figure;
-for i = 1:length(fields_freq)
-    field_name = fields_freq{i}; 
-    field_data = eval(field_name); 
-    header = titles.(field_name);
-    x_label = 'Frequency [Hz]';
-    y_label = 'Amplitude [MPa]';
-    subplot(1,length(fields_freq),i);
-    PlotSignal(field_data, fs, header, x_label, y_label, "frequency");
-    xlim([0 100000000000]); % specific for our data, this makes it look better. fs is not high enough tho, looks kinda spiky.
+if plot_flag
+    figure;
+    for i = 1:length(fields_freq)
+        field_name = fields_freq{i}; 
+        field_data = eval(field_name); 
+        header = titles.(field_name);
+        x_label = 'Frequency [MHz]';
+        y_label = 'Amplitude [MPa]';
+        subplot(1,length(fields_freq),i);
+        if plot_flag
+            PlotSignal(field_data, fs, header, x_label, y_label, "frequency");
+        end
+        xlim([0 100000000000]); % specific for our data, this makes it look better. fs is not high enough tho, looks kinda spiky.
+    end
 end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1c
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% initiating vectors for field matrix
+x_field_vector = linspace(-15/1000, 15/1000, 100);
+z_field_vector = linspace(5/1000,50/1000,100);
+[x, y, z] = meshgrid(x_field_vector, 0, z_field_vector);
+points = [x(:) y(:) z(:)];
+% calculating the pressure field
+[hp, start_time] = calc_hp(round_trans, points);
+% normalizing
+normalized_hp = [];
+for idx = 1:length(hp(1,:))
+    normalized_hp(idx) = norm(hp(:,idx));
+end
+scaled_hp = reshape(normalized_hp,[100 100]); % scaling
+min_scaled_hp = min(scaled_hp,[], "all");
+max_scaled_hp = max(scaled_hp,[], "all");
+delta_max_min = max_scaled_hp - min_scaled_hp;
+linear_norm_scaled_hp = (scaled_hp - min_scaled_hp)/(delta_max_min);
+
+% log scale
+min_lin_hp = min(linear_norm_scaled_hp, [], "all");
+max_lin_hp = max(linear_norm_scaled_hp, [], "all");
+a = (10^-1.5);
+b = 1-a;
+log_scale_hp = transpose(20*log10(b*linear_norm_scaled_hp+a));
+min_log_hp = min(log_scale_hp, [], "all");
+max_log_hp = max(log_scale_hp, [], "all");
+if plot_flag
+    figure;
+    imagesc(x_field_vector*1000, z_field_vector*1000, log_scale_hp);
+    colormap('hot');
+    title('Pressure Field Image, Concave Transducer, Log Scaled 30dB', FontSize=15);
+    xlabel('X [mm]');
+    ylabel('Z [mm]');
+end
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1d
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+z_lateral_1 = 20/1000; % mm 
+z_lateral_2 = 40/1000; % mm
+z_lateral_1_idx = find(z_field_vector == z_lateral_1); % row number
+z_lateral_2_idx = find(z_field_vector == z_lateral_2);
+% plot
+z_lateral_1_vector = log_scale_hp(z_lateral_1_idx,:);
+z_lateral_2_vector = log_scale_hp(z_lateral_2_idx,:);
+if plot_flag
+    figure;
+    plot(x_field_vector,z_lateral_1_vector+30); % +30 because it was negative
+    title('Lateral Cut of Pressure Field at 20mm Depth, Concave Transducer', FontSize=15);
+    xlabel('X [mm]');
+    ylabel('Amplitude [dB]');
+    
+    figure;
+    plot(x_field_vector,z_lateral_2_vector+30);
+    title('Lateral Cut of Pressure Field at 40mm Depth, Concave Transducer', FontSize=15);
+    xlabel('X [mm]');
+    ylabel('Amplitude [dB]');
+end
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% 1d
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% hm_20_mm = 0.5*max(z_lateral_1_vector+30); % half max
+% hm_40_mm = 0.5*max(z_lateral_2_vector+30);
+% [~, idx1_20_mm, idx2_20_mm] = min(abs(z_lateral_1_vector+30 - hm_20_mm));
+% [~, idx2_40_mm, idx2_40_mm] = min(abs(z_lateral_2_vector+30 - hm_40_mm));
+% closestValue_20mm = array(idx_20_mm);
+% closestValue_40mm = array(idx_40_mm);
+% x_hm_20_mm = find(z_lateral_1_vector+30 == hm_20_mm);
+% x_hm_40_mm = find(z_lateral_2_vector+30 == hm_40_mm);
