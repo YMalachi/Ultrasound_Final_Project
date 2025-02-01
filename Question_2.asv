@@ -1,4 +1,4 @@
-clear; clc; 
+clear; clc;
 %% flags
 plot_flag = 1; 
 
@@ -24,7 +24,7 @@ xdc_impulse(linear_128_trans, impulse);
 %% 2a
 
 focus = [0 0 0];
-focus_lst = [80/1000, 40/1000];
+focus_lst = [40/1000, 80/1000];
 for i = 1:2
     focus(1,3) = focus_lst(i);
 
@@ -36,14 +36,13 @@ for i = 1:2
     points = [x(:) y(:) z(:)];
     
     % calculating the pressure field
-    pressure_field_2a = calc_hp(linear_128_trans, points);
-    log_scale_pressure_field_2a = log_scale_field(pressure_field_2a);
-
+    hp = calc_hp(linear_128_trans, points);
+    
+    log_scale_hp = log_scale_field(hp);
     if plot_flag
         figure;
-        imagesc(x_field_vector*1000, z_field_vector*1000, log_scale_pressure_field_2a);
+        imagesc(x_field_vector*1000, z_field_vector*1000, log_scale_hp);
         colormap('hot');
-        colorbar;
         title('Pressure Field Image, 128 Element Transducer, Log Scaled 30dB', FontSize=15);
         xlabel('X [mm]');
         ylabel('Z [mm]');
@@ -55,7 +54,7 @@ for i = 1:2
     z_lateral_idx = find(z_field_vector == z_lateral); % row number
     
     % plot
-    z_lateral_vector = log_scale_pressure_field_2a(z_lateral_idx,:);
+    z_lateral_vector = log_scale_hp(z_lateral_idx,:);
     if plot_flag
         figure;
         plot(x_field_vector,z_lateral_vector+30); % +30 because it was negative
@@ -106,11 +105,9 @@ for i = 1:2
         pressure_field_2d_rect = calc_hp(linear_128_trans, points);
         log_scale_pressure_field_2d_rect = log_scale_field(pressure_field_2d_rect);
         if plot_flag
-            figure(5);
-            subplot(1,2,1);
+            figure;
             imagesc(x_field_vector*1000, z_field_vector*1000, log_scale_pressure_field_2d_rect);
             colormap('hot');
-            colorbar;
             title('Pressure Field Image, Rect Apodization', FontSize=15);
             xlabel('X [mm]');
             ylabel('Z [mm]');
@@ -120,8 +117,7 @@ for i = 1:2
         % plot
         if plot_flag
             z_lateral_vector = log_scale_pressure_field_2d_rect(z_lateral_idx,:);
-            figure(6);
-            subplot(1,2,1);
+            figure;
             plot(x_field_vector,z_lateral_vector+30); % +30 because it was negative
             title('Lateral Cut of Pressure Field at 40mm Depth, Rect Apodization', FontSize=15);
             xlabel('X [mm]');
@@ -146,11 +142,9 @@ for i = 1:2
         pressure_field_2d_hamm = calc_hp(linear_128_trans, points);
         log_scale_pressure_field_2d_hamm = log_scale_field(pressure_field_2d_hamm);
         if plot_flag
-            figure(5);
-            subplot(1,2,2);
+            figure;
             imagesc(x_field_vector*1000, z_field_vector*1000, log_scale_pressure_field_2d_hamm);
             colormap('hot');
-            colorbar;
             title('Pressure Field Image, Hamming Apodization', FontSize=15);
             xlabel('X [mm]');
             ylabel('Z [mm]');
@@ -161,8 +155,7 @@ for i = 1:2
         
         if plot_flag
             z_lateral_vector = log_scale_pressure_field_2d_hamm(z_lateral_idx,:);
-            figure(6);
-            subplot(1,2,2);
+            figure;
             plot(x_field_vector,z_lateral_vector+30); % +30 because it was negative
             title('Lateral Cut of Pressure Field at 40mm Depth, Hamming Apodization', FontSize=15);
             xlabel('X [mm]');
@@ -215,14 +208,27 @@ z_field_vector = linspace(10/1000,100/1000, 100);
 points = [x(:) y(:) z(:)];
 
 % calculating the pressure field
-pressure_field_2e = calc_hhp(linear_128_trans, linear_128_trans, points);
-log_scale_pressure_field_2e = log_scale_field(pressure_field_2e);
+[hhp, start_time] = calc_hhp(linear_128_trans, linear_128_trans, points);
 
+% normalizing
+normalized_hhp = [];
+for idx = 1:length(hhp(1,:))
+    normalized_hhp(idx) = norm(hhp(:,idx));
+end
+scaled_hhp = reshape(normalized_hhp,[100 100]); % scaling
+min_scaled_hhp = min(scaled_hhp,[], "all");
+max_scaled_hhp = max(scaled_hhp,[], "all");
+delta_max_min = max_scaled_hhp - min_scaled_hhp;
+linear_norm_scaled_hhp = (scaled_hhp - min_scaled_hhp)/(delta_max_min);
+
+% log scale
+a = (10^-1.5);
+b = 1-a;
+log_scale_hhp = transpose(20*log10(b*linear_norm_scaled_hhp+a));
 if plot_flag
     figure;
-    imagesc(x_field_vector*1000, z_field_vector*1000, log_scale_pressure_field_2e);
+    imagesc(x_field_vector*1000, z_field_vector*1000, log_scale_hhp);
     colormap('hot');
-    colorbar;
     title('Pressure Field Image, 128 Element Transducer, Log Scaled 30dB', FontSize=15);
     xlabel('X [mm]');
     ylabel('Z [mm]');
@@ -233,7 +239,7 @@ z_lateral = 40/1000; % mm
 z_lateral_idx = find(z_field_vector == z_lateral); % row number
 
 % plot
-z_lateral_vector = log_scale_pressure_field_2e(z_lateral_idx,:) + 30; % so it wont be negative
+z_lateral_vector = log_scale_hhp(z_lateral_idx,:) + 30; % so it wont be negative
 
 if plot_flag
     figure;
