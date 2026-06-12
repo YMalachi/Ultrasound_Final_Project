@@ -1,0 +1,33 @@
+# Refactoring Notes
+
+## Objective
+
+Refactor the original ultrasound course project into a clean,
+documented portfolio repository without changing its scientific results.
+
+## Baseline Environment
+
+- MATLAB version: 24.2.0.2740171 (R2024b) Update 1
+- Operating system: Windows 11
+- Date tested: 12/06/2026
+
+## Script Status
+
+| Script | Runs successfully? | Output produced | Errors or warnings |
+|---|---:|---|---|
+| Question_1.m | Not tested | | |
+| Question_2.m | Not tested | | |
+| Question_3.m | Not tested | | |
+| test.m | Not tested | | |
+| test2.m | Not tested | | |
+| testtest.m | Not tested | | |
+| three_b_backup.m | Not tested | | |
+| ultrasoud_projQ3.m | Not tested | | |
+
+## Refactoring Rules
+
+1. Do not change working numerical behavior unintentionally.
+2. Make one logical change per commit.
+3. Run the relevant script after every meaningful change.
+4. Do not delete experimental files until the authoritative version is identified.
+5. Use descriptive English names for scripts, functions, and variables.
