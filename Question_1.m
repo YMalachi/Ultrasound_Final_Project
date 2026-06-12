@@ -1,4 +1,4 @@
-clear; clc; close all;
+clear; clc; close all ;
 %% flags
 % Flags
 plot_flag = 1; % 1 is on, 0 is off
