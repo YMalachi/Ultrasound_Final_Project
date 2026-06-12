@@ -37,6 +37,7 @@ documented portfolio repository without changing its scientific results.
 - Renamed `Question_3.m` to `simulatePulseEchoBModeImaging.m`
 - Confirmed the renamed script runs successfully
 - Renamed the project report to `field_ii_ultrasound_simulation_report.pdf`
+- Added a concise project README
 
 ## Refactoring Rules
 
