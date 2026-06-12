@@ -1,4 +1,4 @@
-clear; clc; 
+clear; clc; close all;
 %% flags
 plot_flag = 1; 
 
@@ -27,7 +27,6 @@ focus = [0 0 0];
 focus_lst = [80/1000, 40/1000];
 for i = 1:2
     focus(1,3) = focus_lst(i);
-
     xdc_focus(linear_128_trans,0,focus);
     % initiating vectors for field matrix
     x_field_vector = linspace(-15/1000, 15/1000, 100);

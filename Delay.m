@@ -11,5 +11,5 @@ function [time_delay_vec] = Delay(element_number, element_distances, c, focus_po
         time_delay_vec(curr_ele) = delay_ele;
     end
     min_time = min(time_delay_vec);
-    time_delay_vec = time_delay_vec ;
+    time_delay_vec = time_delay_vec;
 end
