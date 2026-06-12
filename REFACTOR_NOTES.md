@@ -30,6 +30,8 @@ documented portfolio repository without changing its scientific results.
 - Renamed `log_scale_field.m` to `convertFieldToDecibels.m`
 - Updated all function calls
 - Confirmed MATLAB recognizes both renamed functions
+- Renamed `Question_1.m` to `simulateConcaveTransducerField.m`
+- Confirmed the renamed script runs successfully
 
 ## Refactoring Rules
 
