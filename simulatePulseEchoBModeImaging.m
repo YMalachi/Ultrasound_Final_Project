@@ -47,8 +47,8 @@ left_half_dist(33:64) = half_and_half_ele_vec(33:64) * pitch - 0.5*pitch;
 right_half_dist(1:32) = half_and_half_ele_vec(65:96) * pitch + 0.5*pitch;
 right_half_dist(33:64) = half_and_half_ele_vec(97:128) * pitch - 0.5*pitch;
 % calculating delays
-delay_left = Delay(64, left_half_dist, c, [-8 0 40]/1000);
-delay_right = Delay(64, right_half_dist, c, [8 0 40]/1000);
+delay_left = computeTransmitDelays(64, left_half_dist, c, [-8 0 40]/1000);
+delay_right = computeTransmitDelays(64, right_half_dist, c, [8 0 40]/1000);
 delay_vec_h_a_h = [delay_left delay_right];
 
 % odd/even distances
@@ -59,8 +59,8 @@ odd_even_distances(65:128) = odd_even_ele_vec_idx(65:128) * pitch - 0.5*pitch;
 odd_dist = odd_even_distances(1:2:128);
 even_dist = odd_even_distances(2:2:128);
 % calculating delays
-odd_delay_vec = Delay(64, odd_dist, c, [-8 0 40]/1000);
-even_delay_vec = Delay(64, even_dist, c, [8 0 40]/1000);
+odd_delay_vec = computeTransmitDelays(64, odd_dist, c, [-8 0 40]/1000);
+even_delay_vec = computeTransmitDelays(64, even_dist, c, [8 0 40]/1000);
 odd_even_delay = reshape([odd_delay_vec;even_delay_vec], 1, []);
 
 % calculating pressure fields
@@ -70,8 +70,8 @@ final_pressure_field_odd_even = set_and_combine_fields(linear_128_trans, linear_
 % plotting
 x_field_vector = linspace(-15/1000, 15/1000, 100);
 z_field_vector = linspace(5/1000,50/1000, 100);
-log_pressure_field_h_and_h = log_scale_field(final_pressure_field_h_and_h);
-log_pressure_field_odd_even = log_scale_field(final_pressure_field_odd_even);
+log_pressure_field_h_and_h = convertFieldToDecibels(final_pressure_field_h_and_h);
+log_pressure_field_odd_even = convertFieldToDecibels(final_pressure_field_odd_even);
 % lateral cut
 z_lateral = 40/1000; % m
 z_lateral_idx = find(z_field_vector == z_lateral); 
