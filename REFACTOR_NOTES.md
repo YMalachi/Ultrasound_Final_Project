@@ -34,6 +34,8 @@ documented portfolio repository without changing its scientific results.
 - Confirmed the renamed script runs successfully
 - Renamed `Question_2.m` to `analyzeLinearArrayFocusing.m`
 - Confirmed the renamed script runs successfully
+- Renamed `Question_3.m` to `simulatePulseEchoBModeImaging.m`
+- Confirmed the renamed script runs successfully
 
 ## Refactoring Rules
 
