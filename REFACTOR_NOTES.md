@@ -32,6 +32,8 @@ documented portfolio repository without changing its scientific results.
 - Confirmed MATLAB recognizes both renamed functions
 - Renamed `Question_1.m` to `simulateConcaveTransducerField.m`
 - Confirmed the renamed script runs successfully
+- Renamed `Question_2.m` to `analyzeLinearArrayFocusing.m`
+- Confirmed the renamed script runs successfully
 
 ## Refactoring Rules
 
