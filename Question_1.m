@@ -106,7 +106,7 @@ z_field_vector = linspace(5/1000,50/1000,100);
 points = [x(:) y(:) z(:)];
 % calculating the pressure field
 [hp, start_time] = calc_hp(round_trans, points);
-log_scale_hp = log_scale_field(hp);
+log_scale_hp = convertFieldToDecibels(hp);
 if plot_flag
     figure;
     imagesc(x_field_vector*1000, z_field_vector*1000, log_scale_hp);

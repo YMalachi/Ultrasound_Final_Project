@@ -36,7 +36,7 @@ for i = 1:2
     
     % calculating the pressure field
     pressure_field_2a = calc_hp(linear_128_trans, points);
-    log_scale_pressure_field_2a = log_scale_field(pressure_field_2a);
+    log_scale_pressure_field_2a = convertFieldToDecibels(pressure_field_2a);
 
     if plot_flag
         figure;
@@ -103,7 +103,7 @@ for i = 1:2
         
         % calculating the pressure field
         pressure_field_2d_rect = calc_hp(linear_128_trans, points);
-        log_scale_pressure_field_2d_rect = log_scale_field(pressure_field_2d_rect);
+        log_scale_pressure_field_2d_rect = convertFieldToDecibels(pressure_field_2d_rect);
         if plot_flag
             figure(5);
             subplot(1,2,1);
@@ -143,7 +143,7 @@ for i = 1:2
         
         % calculating the pressure field
         pressure_field_2d_hamm = calc_hp(linear_128_trans, points);
-        log_scale_pressure_field_2d_hamm = log_scale_field(pressure_field_2d_hamm);
+        log_scale_pressure_field_2d_hamm = convertFieldToDecibels(pressure_field_2d_hamm);
         if plot_flag
             figure(5);
             subplot(1,2,2);
@@ -203,7 +203,7 @@ ele_pos_vec(65) = [];
 ele_dist(1:64) = ele_pos_vec(1:64)*pitch + 0.5*pitch;
 ele_dist(65:128) = ele_pos_vec(65:128)*pitch - 0.5*pitch;
 % calculating using the Delay function
-time_vec_delay = Delay(ele_num, ele_dist, c, [10/1000 0 40/1000]); % see Delay function in the Delay.m function file
+time_vec_delay = computeTransmitDelays(ele_num, ele_dist, c, [10/1000 0 40/1000]); % see Delay function in the Delay.m function file
 xdc_focus_times(linear_128_trans, 0, time_vec_delay);
 xdc_focus_times(linear_128_trans_return, 0, time_vec_delay);
 
@@ -215,7 +215,7 @@ points = [x(:) y(:) z(:)];
 
 % calculating the pressure field
 pressure_field_2e = calc_hhp(linear_128_trans, linear_128_trans, points);
-log_scale_pressure_field_2e = log_scale_field(pressure_field_2e);
+log_scale_pressure_field_2e = convertFieldToDecibels(pressure_field_2e);
 
 if plot_flag
     figure;

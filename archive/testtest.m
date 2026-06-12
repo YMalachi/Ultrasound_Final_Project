@@ -86,10 +86,10 @@ left_focus = [-8, 0, 40] / 1000;   % Left focus (in meters)
 right_focus = [8, 0, 40] / 1000;   % Right focus (in meters)
 
 left_elements = 1:(num_elements / 2); % Left half of the transducer
-%delays_left = Delay(length(left_elements), c, left_focus, element_positions(left_elements));
+%delays_left = computeTransmitDelays(length(left_elements), c, left_focus, element_positions(left_elements));
 
 right_elements = (num_elements / 2 + 1):num_elements; % Right half of the transducer
-%delays_right = Delay(length(right_elements), c, right_focus, element_positions(right_elements));
+%delays_right = computeTransmitDelays(length(right_elements), c, right_focus, element_positions(right_elements));
 
 % Combine delays into full aperture delays
 %delays_all = zeros(1, N_tx_elements);  % Single row, one column per element
@@ -212,7 +212,7 @@ ylabel('Axial Position [mm]');
 title('B-mode Image of the Phantom');
 
 
-function delays = Delay(num_elements, c, focus_point, element_positions)
+function delays = computeTransmitDelays(num_elements, c, focus_point, element_positions)
     % INPUT:
     % num_elements - Number of elements in the transducer
     % c - Speed of sound [m/s]

@@ -1,4 +1,4 @@
-function [log_scaled_field] = log_scale_field(field)
+function [log_scaled_field] = convertFieldToDecibels(field)
     normalized_pressure_field = [];
     for idx = 1:length(field(1,:))
         normalized_pressure_field(idx) = norm(field(:,idx));

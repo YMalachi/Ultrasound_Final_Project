@@ -36,7 +36,7 @@ X_A_1 = zeros(N_tx_elements,1);
 for i = 1:N_tx_elements
     X_A_1(i) = (i-N_tx_elements/2)*(kerf+width);
 end
-delay = Delay(N_tx_elements,c,[8/1000,0,40/1000],X_A_1);
+delay = computeTransmitDelays(N_tx_elements,c,[8/1000,0,40/1000],X_A_1);
 delay = transpose(repmat(delay,1,N_tx_elements));
 time = zeros(size(delay,1),1);
 xdc_focus_times(tx,time,delay);
@@ -105,7 +105,7 @@ times=zeros(1,num_lines);
 % Loop through each scanning line
 for i = 1:num_lines
     % Calculate delays for focusing
-    delays_B = Delay(N_tx_elements, c,focus_point(:, i),X_A_1);
+    delays_B = computeTransmitDelays(N_tx_elements, c,focus_point(:, i),X_A_1);
     delays_B = transpose(repmat(delays_B,1,N_tx_elements));
     time_B = zeros(size(delays_B,1),1);
     xdc_focus_times(tx,time_B,delays_B);

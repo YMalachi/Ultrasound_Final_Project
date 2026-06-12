@@ -1,4 +1,4 @@
-function [time_delay_vec] = Delay(element_number, element_distances, c, focus_point)
+function [time_delay_vec] = computeTransmitDelays(element_number, element_distances, c, focus_point)
     % focus point is a vector that looks like that [x,0,z]
     time_delay_vec = zeros(1,element_number);
     x_co = focus_point(1);
