@@ -15,7 +15,7 @@ documented portfolio repository without changing its scientific results.
 
 | Script | Runs successfully? | Output produced | Errors or warnings |
 |---|---:|---|---|
-| Question_1.m | Not tested | | |
+| Question_1.m | Yes | 6 figures | No |
 | Question_2.m | Not tested | | |
 | Question_3.m | Not tested | | |
 | test.m | Not tested | | |
@@ -23,6 +23,18 @@ documented portfolio repository without changing its scientific results.
 | testtest.m | Not tested | | |
 | three_b_backup.m | Not tested | | |
 | ultrasoud_projQ3.m | Not tested | | |
+
+### Question 1 baseline
+
+- Script completed: Yes
+- Number of figures: 6
+- Concave transducer geometry displayed: Yes
+- Time-domain signals displayed: Yes
+- Frequency-domain signals displayed: Yes
+- 2D pressure field displayed: Yes
+- Lateral cuts displayed: Yes
+- Errors: 0
+- Warnings: 0
 
 ## Refactoring Rules
 
